@@ -1,30 +1,27 @@
-// Dummy database
-const post1 = {id: 1, 
-    title: 'POST TITLE 1', 
-    body: 'HERE IS MY BODY, DO WITH IT WHAT YOU WANT'}
-const post2 = {id: 2, 
-    title: 'POST TITLE 2', 
-    body: 'BODY BODY BODY'}
-const post3 = {id: 3, 
-        title: 'POST TITLE 3', 
-        body: 'BODY BODY BODY'}
-
-const allPosts = [post1, post2, post3] 
-
 module.exports = {
-    posts: function(req, res) {
-        res.send(allPosts)
+    posts: async function(req, res) {
+        try {
+            const posts = await Post.find()
+            res.send(posts)    
+        } catch (err) {
+            res.serverError(err.toString())
+        }
     },
 
     create: function(req, res) {
-        const title = req.param('title')
-        const body = req.param('body')
-        const newPost = {id: 4, title: title, body: body}
+        const title = req.body.title;
+        const body = req.body.body;
 
-        sails.log.debug(title + ' ' + body)
+        sails.log.debug('My title: ' + title)
+        sails.log.debug('My body: ' + body)
 
-        allPosts.push(newPost)
-        res.end()
+        Post.create({title: title, body: body}).exec(function(err) {
+            if (err) {
+                return res.serverError(err.toString())
+            }
+            sails.log.debug('Finished creating post object')
+            return res.end()    
+        })
     },
 
     findById: function(req, res) {
@@ -36,5 +33,11 @@ module.exports = {
         } else {
             res.send('Failed to find post ID: ' + postId)
         }
+    },
+
+    delete: async function(req, res) {
+        const postId = req.param('postId')
+        await Post.destroy({id: postId})
+        res.send('Finished deleting post')
     }
 }
