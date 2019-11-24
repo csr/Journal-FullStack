@@ -8,21 +8,21 @@ module.exports = {
         }
     },
 
-    create: function(req, res) {
-        const title = req.body.title;
-        const body = req.body.body;
+    // create: function(req, res) {
+    //     const title = req.body.title;
+    //     const body = req.body.body;
 
-        sails.log.debug('My title: ' + title)
-        sails.log.debug('My body: ' + body)
+    //     sails.log.debug('My title: ' + title)
+    //     sails.log.debug('My body: ' + body)
 
-        Post.create({title: title, body: body}).exec(function(err) {
-            if (err) {
-                return res.serverError(err.toString())
-            }
-            sails.log.debug('Finished creating post object')
-            return res.end()    
-        })
-    },
+    //     Post.create({title: title, body: body}).exec(function(err) {
+    //         if (err) {
+    //             return res.serverError(err.toString())
+    //         }
+    //         sails.log.debug('Finished creating post object')
+    //         return res.end()    
+    //     })
+    // },
 
     findById: function(req, res) {
         const postId = req.param('postId')
@@ -35,9 +35,9 @@ module.exports = {
         }
     },
 
-    delete: async function(req, res) {
-        const postId = req.param('postId')
-        await Post.destroy({id: postId})
-        res.send('Finished deleting post')
-    }
+    // delete: async function(req, res) {
+    //     const postId = req.param('postId')
+    //     await Post.destroy({id: postId})
+    //     res.send('Finished deleting post')
+    // }
 }
