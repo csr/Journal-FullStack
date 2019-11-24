@@ -43,12 +43,34 @@ class ViewController: UITableViewController {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: nil)
         let post = posts[indexPath.row]
         cell.textLabel?.text = post.title
-        cell.detailTextLabel?.text = post.body        
+        cell.detailTextLabel?.text = post.body
         return cell
     }
     
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let post = self.posts[indexPath.row]
+            Service.shared.deletePost(id: post.id) { (error) in
+                if let error = error {
+                    print("Failed to delete post:", error)
+                    return
+                }
+                print("Successfully deleted post from server")
+                self.posts.remove(at: indexPath.row)
+                self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            }
+        }
+    }
+    
     @objc func handleCreatePost() {
-        print("Create post")
+        Service.shared.createPost(title: "444", body: "555") { (error) in
+            if let error = error {
+                print("Failed to create post object:", error)
+                return
+            }
+            
+            print("Finished creating post")
+            self.fetchPosts()
+        }
     }
 }
-
