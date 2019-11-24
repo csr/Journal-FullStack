@@ -14,11 +14,14 @@ class ViewController: UITableViewController {
 
     fileprivate func fetchPosts() {
         Service.shared.fetchPosts { (result) in
-            switch result {
-            case .failure(let error):
-                print("Failed fetching posts:", error)
-            case .success(let posts):
-                print(posts)
+            DispatchQueue.main.async {
+                switch result {
+                case .failure(let error):
+                    print("Failed fetching posts:", error)
+                case .success(let posts):
+                    self.posts = posts
+                    self.tableView.reloadData()
+                }
             }
         }
     }
@@ -38,6 +41,9 @@ class ViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: nil)
+        let post = posts[indexPath.row]
+        cell.textLabel?.text = post.title
+        cell.detailTextLabel?.text = post.body        
         return cell
     }
     
